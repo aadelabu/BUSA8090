@@ -1,7 +1,7 @@
 ---How to run script---
 
 Question 1:
-To run script: ./newer.sh file1 file2 /home/user/file3
+To run script: ./newer.sh BUSA/foo BUSA/goo BUSA/hoo
 
 Question 2:
 Ton run script: 
