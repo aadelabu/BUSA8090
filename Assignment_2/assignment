@@ -1,0 +1,146 @@
+
+#1a 
+#Note – from the MAN page, paste merges line of files
+#I used a text editor (vi) to create a two new file
+
+vi file-1.tab
+vi file-2.tab
+
+#Put in the content of the gene column in file-1.tab
+#Put in the content of the expr_value column in file-2.tab
+#Below command will paste the output in a new file name e.g Busa8090.tab
+
+paste file-1.tab file-2.tab > Busa8090.tab
+
+#1b
+#use a text editor (vi) to create a three new file
+
+vi anno-1.tab
+vi anno-2.tab
+vi anno-3.tab
+
+#Put in the content of the gene column in vi anno-1.tab
+#Put in the content of the function column in vi anno-2.tab
+#Put in the content of the metabolism column in vi anno-3.tab
+#Below command will paste the output in a new file name e.g anno-final.tab
+
+paste anno-1.tab anno-2.tab anno-3.tab > anno-final.tab
+
+#1c
+#From the man page, join is used to join file.
+Join annotation expression > filename
+
+
+
+#1di
+# login to mysql mysql -u awkology -p
+# type use compbiol
+
+σmetabolism=Pyrimidine biosynthesis(annotation)\G #ommiting π means select *
+
+
+
+#1dii
+# login to mysql mysql -u awkology -p
+# type use compbiol
+ 
+select * from annotation where metabolism = "Pyrimidine biosynthesis"\G
+
+#2ai
+# login to mysql mysql -u awkology -p
+# type use compbiol
+# return all column for member who without coach
+
+πFirstName,LastName σCoach=NULL(Member)
+
+#2aii
+# login to mysql mysql -u awkology -p
+# type use compbiol
+# return all column for member who without coach
+
+{m.FirstName, m.LastName | Member(m) and m.coach = "NULL"}
+
+#2aiii 
+# login to mysql mysql -u awkology -p
+# type use compbiol
+# return all column for member who without coach 
+SELECT * FROM expression WHERE coach is NULL;
+
+
+#2bi
+# login to mysql mysql -u awkology -p
+# type use compbiol
+# return the LastName and FirstName of members who join in 2010
+
+πFirstName,LastName σJoinDate>=2010-01-01 00:00:00 ∧ JoinDate < 2010-12-01 00:00:00(Member)
+
+
+#2bii
+# login to mysql mysql -u awkology -p
+# type use compbiol
+# return the LastName and FirstName of members who join in 2010
+
+{m.LastName, m.FirstName | Member(m) and 􀀇 (e) Entry(e) and 􀀇 (t) Tournament(t) and
+m.MemberID = e.MemberID and e.TourID = t.TourID and t.TourType = ‘Open’ and e.Year = 2006}
+
+
+
+
+#2biii
+# login to mysql mysql -u awkology -p
+# type use compbiol
+# # return the LastName and FirstName of members who join in 2010
+select LastName, FirstName from Member where JoinDate >= "2010-01-01 00:00:00" and JoinDate < "2010-12-01 00:00:00";
+
+
+#2ci
+# login to mysql mysql -u awkology -p
+# type use compbiol
+# return the names and ID where there is a relationship between member and entryfor members who haven't enter the tournament in 2014 but have entered in other years
+
+πFirstName,LastName,MemberID σYear!=2014 ∧ m.MemberID = e.Member(Member X Entry)
+
+
+#2cii
+# login to mysql mysql -u awkology -p
+# type use compbiol
+# return the names and ID where there is a relationship between member and entry for members who haven't enter the tournament in 2014 but have entered in other years 
+
+{m.LastName, m.FirstName, m.MemberID | Member(m) and 􀀇 (e) Entry(e) and
+m.MemberID = e.MemberID and e.Year != "2014"}
+
+#2ciii
+# login to mysql mysql -u awkology -p
+# type use compbiol
+# return the names and ID where there is a relationship between member and entry for members who haven't enter the tournament in 2014 but have entered in other years
+
+select m.MemberID, m.LastName, m.FirstName from Member m where exists (select * from Entry e where e.MemberID = m.MemberID and e.Year != "2014")
+
+
+#2di
+# login to mysql mysql -u awkology -p
+# type use compbiol
+# return the member names and IDs such that there is relationship between member that entered into a tournament every year
+
+πFirstName,LastName,MemberID σYear!=2014 ∧ m.MemberID = e.Member(Member X Entry)
+
+
+#2dii
+# login to mysql mysql -u awkology -p
+# type use compbiol
+# return the member names and IDs such that there is relationship between member that entered into a tournament every year
+
+{m.MemberID | Member(m) and 􀀇 (e) Entry(e) and
+m.MemberID = e.MemberID and e.Year}
+
+#2diii
+# login to mysql mysql -u awkology -p
+# type use compbiol
+# return the member names and IDs such that there is relationship between member that entered into a tournament every year
+
+
+SELECT MemberID
+FROM Entry e
+GROUP BY MemberID
+HAVING COUNT(DISTINCT TourID) =
+(SELECT COUNT(DISTINCT TourID) FROM Tournament)
